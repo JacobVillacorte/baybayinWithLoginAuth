@@ -31,10 +31,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.currentUser = user;
       if (user) {
         try {
-          // Check for daily login bonus first
-          const bonusAwarded = await this.scoreService.awardDailyBonus();
-          
-          // Then load/refresh user profile to show updated score
+          // Load user profile without automatically claiming daily bonus
           this.userProfile = await this.authService.getUserProfile(user.uid);
           
         } catch (error) {

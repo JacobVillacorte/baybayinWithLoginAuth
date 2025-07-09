@@ -34,6 +34,13 @@ export class AuthService {
     // Listen for authentication state changes
     onAuthStateChanged(this.auth, (user) => {
       this.currentUserSubject.next(user);
+      
+      // Track login date when user signs in (but don't award bonus automatically)
+      if (user) {
+        this.trackLoginDate(user.uid).catch(error => {
+          console.error('Error tracking login date:', error);
+        });
+      }
     });
   }
 
@@ -44,12 +51,16 @@ export class AuthService {
       
       // Create user profile in database
       if (result.user) {
+        const today = new Date().toISOString().split('T')[0];
         await this.createUserProfile(result.user.uid, {
           email: email,
           displayName: displayName || email.split('@')[0],
           totalScore: 0,
           gamesPlayed: 0,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          lastLoginDate: today,
+          lastDailyBonusDate: '', // Initialize as empty to prevent automatic claiming
+          loginStreak: 1
         });
       }
       
@@ -171,22 +182,18 @@ export class AuthService {
     
     if (userSnapshot.exists()) {
       const userData = userSnapshot.val();
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format for better consistency
+      const today = new Date().toISOString().split('T')[0];
+      const lastDailyBonusDate = userData.lastDailyBonusDate;
       const lastLoginDate = userData.lastLoginDate;
       
-      // Check if user already logged in today
-      if (lastLoginDate !== today) {
+      // Check if user logged in today AND hasn't claimed bonus today
+      if (lastLoginDate === today && lastDailyBonusDate !== today) {
         // Award daily bonus
         const dailyBonus = 2;
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
         
         const updatedData = {
           totalScore: (userData.totalScore || 0) + dailyBonus,
-          lastLoginDate: today,
-          loginStreak: lastLoginDate === yesterdayStr 
-            ? (userData.loginStreak || 0) + 1 : 1 // Increment streak or reset to 1
+          lastDailyBonusDate: today // Only update bonus date, not login date
         };
         
         await update(userRef, updatedData);
@@ -194,6 +201,36 @@ export class AuthService {
       }
     }
     
-    return false; // No bonus (already logged in today)
+    return false; // No bonus (not logged in today or already claimed)
+  }
+
+  // Track user login date without awarding bonus
+  async trackLoginDate(uid: string): Promise<void> {
+    const userRef = ref(this.db, `users/${uid}`);
+    const userSnapshot = await get(userRef);
+    
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.val();
+      const today = new Date().toISOString().split('T')[0];
+      const lastLoginDate = userData.lastLoginDate;
+      
+      // Skip if this is a new account (created today) or already logged in today
+      const createdToday = userData.createdAt && 
+        userData.createdAt.split('T')[0] === today;
+      
+      if (!createdToday && lastLoginDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        
+        const updatedData = {
+          lastLoginDate: today,
+          loginStreak: lastLoginDate === yesterdayStr 
+            ? (userData.loginStreak || 0) + 1 : 1 // Increment streak or reset to 1
+        };
+        
+        await update(userRef, updatedData);
+      }
+    }
   }
 }

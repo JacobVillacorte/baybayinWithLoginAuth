@@ -51,7 +51,7 @@ export class SignupPage implements OnInit {
       await this.authService.signUp(this.email, this.password, this.displayName);
       await loading.dismiss();
       this.showToast('Account created successfully!', 'success');
-      this.router.navigate(['/tabs']); // Navigate to main app
+      this.router.navigate(['/splash'], { queryParams: { action: 'signup' } }); // Navigate with signup context
     } catch (error: any) {
       await loading.dismiss();
       this.showToast(this.getErrorMessage(error.code), 'danger');

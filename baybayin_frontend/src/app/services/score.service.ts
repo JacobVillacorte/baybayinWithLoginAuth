@@ -65,8 +65,11 @@ export class ScoreService {
       return false;
     }
 
+    console.log('awardDailyBonus called for user:', currentUser.uid);
+
     // Prevent multiple claims in same session
     if (this.dailyBonusClaimedToday) {
+      console.log('Daily bonus already claimed in this session');
       const toast = await this.toastController.create({
         message: '✅ Daily bonus already claimed today!',
         duration: 2000,

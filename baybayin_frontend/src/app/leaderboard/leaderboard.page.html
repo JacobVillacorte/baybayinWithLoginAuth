@@ -19,8 +19,17 @@
 
   <!-- Authenticated User Leaderboard -->
   <div *ngIf="currentUser" class="authenticated-leaderboard">
+    <!-- Offline Message -->
+    <ion-card *ngIf="isOffline" class="error-card ion-margin" color="medium">
+      <ion-card-content class="ion-text-center">
+        <ion-icon name="wifi-off" size="large" color="light" class="ion-margin-bottom"></ion-icon>
+        <h2>You're Offline</h2>
+        <p>Leaderboard requires an internet connection. Please check your network and try again.</p>
+      </ion-card-content>
+    </ion-card>
+
     <!-- Permission Error Message -->
-    <ion-card *ngIf="hasPermissionError" class="error-card ion-margin">
+    <ion-card *ngIf="hasPermissionError && !isOffline" class="error-card ion-margin">
       <ion-card-content class="ion-text-center">
         <ion-icon name="warning" size="large" color="warning" class="ion-margin-bottom"></ion-icon>
         <h2>Database Access Error</h2>

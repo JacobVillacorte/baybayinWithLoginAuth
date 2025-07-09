@@ -39,7 +39,8 @@ export class LoginPage implements OnInit {
       await this.authService.signIn(this.email, this.password);
       await loading.dismiss();
       this.showToast('Login successful!', 'success');
-      this.router.navigate(['/tabs']); // Navigate to main app
+      // Show splash screen with login context
+      this.router.navigate(['/splash'], { queryParams: { action: 'login' } });
     } catch (error: any) {
       await loading.dismiss();
       this.showToast(this.getErrorMessage(error.code), 'danger');

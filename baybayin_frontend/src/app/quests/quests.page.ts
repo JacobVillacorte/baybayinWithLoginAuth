@@ -131,8 +131,24 @@ export class QuestsPage implements OnInit, OnDestroy {
       switch (quest.id) {
         case 'daily_login':
           const today = new Date().toISOString().split('T')[0]; // Use same format as AuthService
-          quest.completed = this.userProfile.lastLoginDate === today;
-          quest.progress = quest.completed ? 1 : 0;
+          // Check if user logged in today AND hasn't claimed the quest today
+          const loggedInToday = this.userProfile.lastLoginDate === today;
+          const claimedToday = this.userProfile.lastDailyBonusDate === today;
+          
+          // For new accounts, show as available if logged in today and no bonus claimed
+          quest.completed = loggedInToday && !claimedToday;
+          quest.progress = loggedInToday ? 1 : 0;
+          quest.claimed = claimedToday;
+          
+          console.log('Daily login quest status:', {
+            loggedInToday,
+            claimedToday,
+            lastLoginDate: this.userProfile.lastLoginDate,
+            lastDailyBonusDate: this.userProfile.lastDailyBonusDate,
+            today,
+            completed: quest.completed,
+            claimed: quest.claimed
+          });
           break;
         case 'transliterate_3':
           // This would need to be tracked in user profile
@@ -167,11 +183,23 @@ export class QuestsPage implements OnInit, OnDestroy {
   }
 
   async claimQuest(quest: any, isWeekly: boolean = false) {
-    if (!this.currentUser || !quest.completed) {
+    if (!this.currentUser || !quest.completed || quest.claimed) {
       return;
     }
 
     try {
+      // Special handling for daily login quest - use ScoreService method
+      if (quest.id === 'daily_login') {
+        const bonusAwarded = await this.scoreService.awardDailyBonus();
+        if (bonusAwarded) {
+          quest.claimed = true;
+          // Refresh profile to update quest status
+          await this.refreshUserProfile();
+        }
+        return;
+      }
+
+      // For other quests, award points normally
       await this.scoreService.awardPoints(`Quest: ${quest.title}`, quest.points);
       
       const toast = await this.toastController.create({
