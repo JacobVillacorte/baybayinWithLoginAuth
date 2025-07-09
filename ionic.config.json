@@ -1,0 +1,7 @@
+{
+  "name": "buhAIn",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
