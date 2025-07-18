@@ -23,11 +23,15 @@
 }
 
 .splash-logo {
-  width: 150px; height: 150px;
+  width: 150px; 
+  height: 150px;
   object-fit: contain;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   animation: logoPulse 2s ease-in-out infinite;
+  /* Optimize image loading performance */
+  image-rendering: optimizeQuality;
+  will-change: transform;
 }
 
 .app-title {

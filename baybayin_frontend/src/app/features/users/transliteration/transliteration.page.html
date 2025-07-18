@@ -1,0 +1,192 @@
+<!-- Transliteration Page Content -->
+<ion-content class="transliteration-content">
+  <div class="container">
+    <h1 class="page-title">Transliteration</h1>
+    
+    <ion-card class="method-card">
+      <ion-card-header>
+        <ion-card-title class="method-title">Choose Method</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Compact Method Buttons -->
+        <div class="method-buttons">
+          <ion-button 
+            fill="clear" 
+            class="method-btn" 
+            (click)="onCamera()"
+            [color]="cameraImage ? 'primary' : 'medium'">
+            <ion-icon name="camera" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            class="method-btn" 
+            (click)="onUpload()"
+            [color]="showUploadPreview ? 'primary' : 'medium'">
+            <ion-icon name="image" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            class="method-btn" 
+            (click)="onText()"
+            [color]="showTextInput ? 'primary' : 'medium'">
+            <ion-icon name="text" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <!-- Upload input (hidden) -->
+        <input id="uploadInput" type="file" accept="image/*" hidden (change)="handleUpload($event)">
+        
+        <!-- Text Input Section -->
+        <div *ngIf="showTextInput" class="text-section">
+          <!-- Toggle Switch -->
+          <div class="toggle-container">
+            <span class="toggle-label">{{ transliterationDirection === 'latin-to-baybayin' ? 'Latin → Baybayin' : 'Baybayin → Latin' }}</span>
+            <ion-toggle 
+              color="success" 
+              [(ngModel)]="isLatinToBaybayin" 
+              (ionChange)="onToggleDirection()">
+            </ion-toggle>
+          </div>
+          
+          <!-- Input Field -->
+          <div class="input-container">
+            <ion-textarea 
+              [(ngModel)]="inputText" 
+              class="text-input"
+              [placeholder]="transliterationDirection === 'latin-to-baybayin' ? 'Enter Latin text here...' : 'Enter Baybayin text here...'"
+              autoGrow="true"
+              rows="3">
+            </ion-textarea>
+          </div>
+          
+          <!-- Character Picker for Baybayin to Latin -->
+          <div *ngIf="transliterationDirection === 'baybayin-to-latin'" class="character-picker">
+            <!-- Character Keyboard Layout -->
+            <div class="character-keyboard">
+              <!-- First Row: Vowels -->
+              <div class="keyboard-row">
+                <button 
+                  *ngFor="let char of baybayinVowels" 
+                  class="char-btn vowel-btn"
+                  (click)="addCharacter(char.baybayin)">
+                  <div class="char-display">{{ char.baybayin }}</div>
+                  <div class="char-label">{{ char.latin }}</div>
+                </button>
+              </div>
+              
+              <!-- Second Row: First set of consonants -->
+              <div class="keyboard-row">
+                <button 
+                  *ngFor="let char of baybayinConsonants.slice(0, 6)" 
+                  class="char-btn consonant-btn"
+                  (click)="addCharacter(char.baybayin)">
+                  <div class="char-display">{{ char.baybayin }}</div>
+                  <div class="char-label">{{ char.latin }}</div>
+                </button>
+              </div>
+              
+              <!-- Third Row: Second set of consonants -->
+              <div class="keyboard-row">
+                <button 
+                  *ngFor="let char of baybayinConsonants.slice(6, 11)" 
+                  class="char-btn consonant-btn"
+                  (click)="addCharacter(char.baybayin)">
+                  <div class="char-display">{{ char.baybayin }}</div>
+                  <div class="char-label">{{ char.latin }}</div>
+                </button>
+              </div>
+              
+              <!-- Fourth Row: Remaining consonants -->
+              <div class="keyboard-row">
+                <button 
+                  *ngFor="let char of baybayinConsonants.slice(11)" 
+                  class="char-btn consonant-btn"
+                  (click)="addCharacter(char.baybayin)">
+                  <div class="char-display">{{ char.baybayin }}</div>
+                  <div class="char-label">{{ char.latin }}</div>
+                </button>
+              </div>
+              
+              <!-- Fifth Row: Special characters and actions -->
+              <div class="keyboard-row">
+                <button 
+                  *ngFor="let char of baybayinSpecial" 
+                  class="char-btn special-btn"
+                  (click)="addCharacter(char.baybayin)">
+                  <div class="char-display">{{ char.baybayin }}</div>
+                  <div class="char-label">{{ char.latin }}</div>
+                </button>
+                
+                <!-- Clear Button -->
+                <button class="char-btn action-btn" (click)="clearText()">
+                  <ion-icon name="backspace"></ion-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <ion-button 
+            expand="block" 
+            color="success" 
+            class="translate-btn"
+            (click)="submitText()">
+            <ion-icon name="swap-horizontal" slot="start"></ion-icon>
+            Translate
+          </ion-button>
+        </div>
+        
+        <!-- Image Previews -->
+        <div *ngIf="cameraImage && !showTextInput && !showUploadPreview" class="image-preview">
+          <img [src]="cameraImage" alt="Camera Preview" class="preview-image" />
+          <p class="preview-label">Camera Image</p>
+        </div>
+        
+        <div *ngIf="showUploadPreview && !showTextInput && !cameraImage" class="image-preview">
+          <img [src]="uploadedImageSrc" alt="Upload Preview" class="preview-image" />
+          <p class="preview-label">Uploaded Image</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    
+    <!-- Result Card -->
+    <ion-card *ngIf="result" class="result-card">
+      <ion-card-header>
+        <ion-card-title class="result-title">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          Translation Result
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="result-text">{{ result }}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <!-- Bottom Instructions -->
+    <ion-card class="bottom-instructions-card">
+      <ion-card-content>
+        <div class="bottom-instructions">
+          <h4>Quick Guide</h4>
+          <div class="color-guide">
+            <div class="guide-item">
+              <div class="color-indicator vowel-color"></div>
+              <span>Vowels (a, i, u)</span>
+            </div>
+            <div class="guide-item">
+              <div class="color-indicator consonant-color"></div>
+              <span>Consonants (ka, ga, nga, etc.)</span>
+            </div>
+            <div class="guide-item">
+              <div class="color-indicator special-color"></div>
+              <span>Special characters (kudlit, virama)</span>
+            </div>
+          </div>
+          <p class="note">
+            <strong>Tip:</strong> Switch between Latin→Baybayin and Baybayin→Latin using the toggle above. 
+            Use the character picker for easier Baybayin input.
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

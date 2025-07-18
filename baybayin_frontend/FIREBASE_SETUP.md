@@ -24,6 +24,12 @@ The leaderboard was showing "Permission denied" because Firebase Realtime Databa
       "$uid": {
         ".write": "auth != null && auth.uid == $uid"
       }
+    },
+    "admins": {
+      ".read": "auth != null && auth.token.email == 'admin@gmail.com'",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid && auth.token.email == 'admin@gmail.com'"
+      }
     }
   }
 }
@@ -61,6 +67,21 @@ If you want to test quickly with full access (NOT recommended for production):
           ".validate": "newData.isString()"
         }
       }
+    },
+    "admins": {
+      ".read": "auth != null && auth.token.email == 'admin@gmail.com'",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid && auth.token.email == 'admin@gmail.com'",
+        "email": {
+          ".validate": "newData.isString()"
+        },
+        "displayName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "isAdmin": {
+          ".validate": "newData.val() == true"
+        }
+      }
     }
   }
 }
@@ -71,8 +92,26 @@ If you want to test quickly with full access (NOT recommended for production):
 After updating the rules:
 1. Click **Publish** in Firebase Console
 2. Wait 2-3 minutes for rules to propagate globally
-3. Refresh your Ionic app
-4. The leaderboard should now show all users
+
+## 🧹 IMPORTANT: Clean Up Admin Data from Users Path
+
+**After updating the rules, you need to:**
+
+1. **Delete admin data from users path:**
+   - In Firebase console, go to Data tab
+   - Find and delete the admin entry under `users/` (the one with `"isAdmin": true`)
+   - This will ensure complete separation between users and admins
+
+2. **Test admin login:**
+   - Log out from the app
+   - Log back in as admin (admin@gmail.com)
+   - The app will automatically create the admin profile in the new `admins/` path
+
+## ✅ After These Steps:
+- Admin will have their own separate `admins/` path in the database
+- Users will only be in the `users/` path
+- Complete separation between admin and user data
+- Route guards will work properly
 
 ## Troubleshooting:
 

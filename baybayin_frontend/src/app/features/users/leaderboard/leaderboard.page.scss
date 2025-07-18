@@ -1,0 +1,316 @@
+.leaderboard-bg {
+  background: linear-gradient(135deg, var(--ion-background-color) 0%, var(--ion-color-step-100) 100%);
+}
+
+.leaderboard-card, .empty-leaderboard, .login-prompt-card {
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 18px;
+  box-shadow: var(--ion-card-shadow);
+}
+
+.empty-leaderboard, .login-prompt-card { max-width: 400px; }
+
+.leaderboard-alert {
+  background: var(--ion-color-warning-tint);
+  color: var(--ion-color-warning-shade);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.duo-reminder {
+  background: var(--ion-color-primary-tint);
+  border-radius: 12px;
+  padding: 18px 12px 10px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px 0 rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.duo-reminder-text {
+  font-size: 1.1rem;
+  margin: 8px 0 4px;
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.duo-login-link {
+  color: var(--ion-color-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  margin-top: 2px;
+}
+
+.highlight { color: var(--ion-color-primary); font-weight: 600; }
+
+ion-card-title {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rank-icon { margin-right: 6px; font-size: 1.2rem; }
+.score-note { font-size: 1.1rem; font-weight: 600; }
+
+.current-user {
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  border-left: 4px solid var(--ion-color-primary);
+}
+
+.empty-leaderboard, .login-prompt-card {
+  ion-icon { font-size: 3rem; margin-bottom: 12px; }
+  h2 { color: var(--ion-color-medium); margin: 8px 0; }
+  p { color: var(--ion-color-medium); font-size: 0.9rem; }
+}
+
+.login-reminder, .reminder-text {
+  h3 { color: var(--ion-color-primary); margin: 12px 0 8px; }
+  p { color: var(--ion-color-medium); font-size: 0.95rem; line-height: 1.4; }
+}
+
+.login-prompt-card {
+  h2 { font-size: 1.4rem; }
+  p { margin-bottom: 20px; }
+}
+
+.benefits-list { text-align: left; padding: 0 20px; }
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 8px 12px;
+  background: rgba(var(--ion-color-primary-rgb), 0.05);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--ion-text-color);
+
+  ion-icon { flex-shrink: 0; font-size: 1.2rem; }
+}
+
+.daily-bonus-toast {
+  --background: linear-gradient(45deg, var(--ion-color-primary), var(--ion-color-secondary));
+  --color: white;
+}
+
+/* Theme transition for smooth theme switching */
+ion-content, ion-card, ion-item {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Pagination styles */
+.pagination-controls {
+  border-top: 1px solid var(--ion-color-step-150);
+  padding-top: 16px;
+  
+  .page-info {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+    margin: 0 8px;
+  }
+  
+  ion-button {
+    --border-radius: 8px;
+    margin: 2px;
+    
+    &[disabled] {
+      --opacity: 0.4;
+    }
+  }
+}
+
+/* Current user position styling */
+.current-user-position {
+  border-top: 1px solid var(--ion-color-step-200);
+  padding-top: 16px;
+}
+
+.current-user-item {
+  --background: var(--ion-color-primary-tint);
+  --border-radius: 12px;
+  margin: 8px 0;
+  
+  ion-label h2 {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+  
+  .score-note {
+    color: var(--ion-color-primary);
+    font-weight: 700;
+  }
+}
+
+/* Dark Mode Support for Leaderboard Page */
+body.dark-theme {
+  .leaderboard-bg {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --ion-color-primary: #64b5f6;
+    --ion-color-warning-tint: #f59e0b;
+    --ion-color-warning-shade: #d97706;
+  }
+  
+  .leaderboard-card, .empty-leaderboard, .login-prompt-card {
+    --background: #2d3748;
+    border: 1px solid #4a5568;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .leaderboard-alert {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  
+  .duo-reminder {
+    background: rgba(100, 181, 246, 0.15);
+    border: 1px solid rgba(100, 181, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(100, 181, 246, 0.2);
+  }
+  
+  .duo-reminder-text {
+    color: #64b5f6;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .duo-login-link {
+    color: #81c784;
+  }
+  
+  .highlight {
+    color: #64b5f6;
+  }
+  
+  ion-card-title {
+    color: #64b5f6;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .current-user {
+    --background: rgba(100, 181, 246, 0.2);
+    border-left: 4px solid #64b5f6;
+  }
+  
+  .empty-leaderboard, .login-prompt-card {
+    ion-icon {
+      color: #64b5f6;
+    }
+    
+    h2 {
+      color: #e2e8f0;
+    }
+    
+    p {
+      color: #a0aec0;
+    }
+  }
+  
+  .login-reminder, .reminder-text {
+    h3 {
+      color: #64b5f6;
+    }
+    
+    p {
+      color: #cbd5e0;
+    }
+  }
+  
+  .login-prompt-card {
+    h2 {
+      color: #64b5f6;
+    }
+    
+    p {
+      color: #d1d5db;
+    }
+  }
+  
+  .benefit-item {
+    background: rgba(100, 181, 246, 0.1);
+    border: 1px solid rgba(100, 181, 246, 0.2);
+    color: #e2e8f0;
+    
+    ion-icon {
+      color: #81c784;
+    }
+  }
+  
+  .pagination-controls {
+    border-top: 1px solid #4a5568;
+    
+    .page-info {
+      color: #a0aec0;
+    }
+  }
+  
+  .current-user-position {
+    border-top: 1px solid #4a5568;
+  }
+  
+  .current-user-item {
+    --background: rgba(100, 181, 246, 0.2);
+    border: 1px solid rgba(100, 181, 246, 0.3);
+    
+    ion-label h2 {
+      color: #64b5f6;
+    }
+    
+    .score-note {
+      color: #64b5f6;
+    }
+  }
+  
+  /* Dark mode for list items */
+  ion-item {
+    --background: #374151;
+    --border-color: #4b5563;
+    --color: #e2e8f0;
+    
+    ion-label h2 {
+      color: #f3f4f6;
+    }
+    
+    ion-label p {
+      color: #d1d5db;
+    }
+    
+    ion-badge {
+      --background: #4b5563;
+      --color: #e2e8f0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+/* Enhanced hover effects */
+.leaderboard-card ion-item {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 181, 246, 0.2);
+  }
+}
+
+body.dark-theme .leaderboard-card ion-item:hover {
+  box-shadow: 0 4px 12px rgba(100, 181, 246, 0.4);
+}
+
+/* Smooth animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.leaderboard-card {
+  animation: fadeInUp 0.4s ease-out;
+}
